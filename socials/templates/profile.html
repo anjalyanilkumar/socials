@@ -1,0 +1,82 @@
+{%extends 'base.html'%}
+{% load static %}
+
+
+
+{% block title %}
+{{user.username}}
+{% endblock %}
+{%block body_block%}
+
+
+<div class="card mb-3">
+    <div class="row g-0">
+      <div class="col-md-4">
+        <img src="{{user.profile.profile_pic.url}}" class="img-fluid rounded-start" alt="">
+      </div>
+      <div class="col-md-8" style="max-width: 100%;">
+        <div class="card-body">
+          <span class="input-group-text" id="basic-addon1">@<h5 class="card-title">{{user.username}}</h5></span>
+          <p class="card-text">{{user.first_name}} {{user.last_name}}</p>
+          <p class="card-text">{{user.profile.bio}}</p>
+          <p class="card-text"><small class="text-muted">{{user.profile.location}}</small></p>
+          <p class="card-text">{{user.profile.followerscount}} followers</p>
+          <a class="btn btn-sm btn-outline-info" href="{% url 'editprofile' %}">edit profile</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+{%for post in posts%}
+<div class="card mb-3">
+  
+  <div class="card-body">
+   <img src="{{user_profile.profile_pic.url}}" class="card-img-top" alt="">
+    <h5 class="card-title"><span class="input-group-text fw-bold" id="basic-addon1"> @<a class="fw-bold " href="">{{post.user}}</a>
+      <a href="{%url 'deletepost' post.id%}" class="btn btn-danger btn-sm ms-5">delete</a> 
+  </span></h5>
+
+  {%if post.images%}
+  <a href="#!"><img class="card-img-top" src="{{post.images.url}}" alt="..." /></a>
+  {%endif%}
+    <p class="card-text">{{post.caption}}</p>
+    <div class="small text-muted">{{post.created_date}} {{post.postlikecount}} likes</div>
+    <div class="mt-2">
+        <a class="btn btn-outline-primary" href="{%url 'like-post' post.id%}">Like</a>
+        <div class="mt-2">
+            <form action="{%url 'add-cmt' post.id%}" method="post">
+                {%csrf_token%}
+                <!-- <input type="text" name="comment" id="" placeholder="add comment" class="form-control"><button type="submit" class="btn btn-outline-info btn-sm mt-3">comment</button> -->
+                <div class="input-group mb-3">
+                    <input type="text" name="comment" class="form-control" placeholder="add comment" aria-describedby="button-addon2">
+                    <button class="btn btn-outline-secondary" type="submit" id="button-addon2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right-short" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"/>
+                    </svg></button>
+                </div>
+            </form>
+            
+            <h6 class="post-subtitle mt-2 ms-2">Comments</h6>
+            {%for cmt in post.post_comments%}
+            <!-- <div class="border rounded-pill p-3 border-success mt-2"> -->
+            <div class="row">
+                <h2 class="card-title">
+                    <span class="input-group-text fw-bold" id="basic-addon1">@
+                        <a class="fw-bold text-muted" href="#">{{cmt.user}} : </a> {{cmt}}
+                        <span class="ms-5 text-muted fst-italic">{{cmt.created_date}} {{cmt.likecount}} likes</span>
+                        <a href="{%url 'cmt-like' cmt.id%}" class="btn btn-outline-warning btn-sm ">like</a>
+                    </span>
+                </h2>  
+            </div>
+            {%endfor%}
+        </div>
+    </div>
+</div>
+</div>
+{%endfor%}
+{%endblock%}
+
+
